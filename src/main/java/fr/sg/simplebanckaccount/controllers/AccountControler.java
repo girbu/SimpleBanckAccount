@@ -28,6 +28,7 @@ public class AccountControler {
 
     @PostConstruct
     public void init() {
+        // TO_DELETE
         Account account = new Account("admin", "admin", 100.0, new ArrayList<Transaction>());
         accounts.put("admin", account);
         System.out.println(accounts);

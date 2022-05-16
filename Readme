@@ -24,3 +24,16 @@ US 3:
 In order to check my operations
 As a bank client
 I want to see the history (operation, date, amount, balance) of my operations
+
+
+
+Operation guide:
+    java -jar SimpleBanckAccount-0.0.1-SNAPSHOT.jar
+
+Test API exemple:
+Deposit money:
+    curl -u "admin:admin" -X PUT http://localhost:8080/saveMoney?amount=10    
+Retrieve money:
+    curl -u "admin:admin" -X PUT http://localhost:8080/withdrawMoney?amount=5 
+History of transactions:
+    curl -u "admin:admin" -X GET http://localhost:8080/checkBalance    
