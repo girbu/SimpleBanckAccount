@@ -11,8 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -38,8 +41,11 @@ public class AccountControllerTest {
 
     @Test
     public void openAccountShouldAddNewAccount() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>("{\"username\":\"user2\", \"password\" : \"admin\"}", headers);
         ResponseEntity<String> reponse = this.restTemplate
-                .exchange(getBaseUrl() + "/openAccount", HttpMethod.POST, null, String.class);
+                .exchange(getBaseUrl() + "/openAccount", HttpMethod.POST, entity, String.class);
 
         assertThat(reponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(reponse.getBody()).contains("Account created");
