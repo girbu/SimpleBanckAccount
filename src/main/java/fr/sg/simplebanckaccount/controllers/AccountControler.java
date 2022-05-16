@@ -40,10 +40,7 @@ public class AccountControler {
 
     @PutMapping("/saveMoney")
     public String saveMoney(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestParam Double amount) {
-        String[] authParts = auth.split(" ");
-        String authInfo = authParts[1];
-        String decodedAuth = new String(Base64.getDecoder().decode(authInfo));
-        String[] credentials = decodedAuth.split(":");
+        String[] credentials = getCredentials(auth);
 
         Account account = accounts.get(credentials[0]);
         if (account != null && account.getPassword().equals(credentials[1])) {
@@ -55,5 +52,27 @@ public class AccountControler {
             LOG.info("Deposit of {}€ failed on account {}", amount, credentials[0]);
             return "You are not authorized to perform this action";
         }
+    }
+
+    @PutMapping("/withdrawMoney")
+    public String withdrawMoney(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestParam Double amount) {
+        String[] credentials = getCredentials(auth);
+        Account account = accounts.get(credentials[0]);
+        if (account != null && account.getPassword().equals(credentials[1]) && account.getBalance() >= amount) {
+            account.setBalance(account.getBalance() - amount);
+            account.addTransaction(new Transaction(amount, LocalDateTime.now(), "Withdraw"));
+            LOG.info("Withdraw of {}€ done on account {}", amount, account.getUser());
+            return "Your balance is now " + account.getBalance();
+        } else {
+            LOG.info("Withdraw of {}€ failed on account {}", amount, credentials[0]);
+            return "You are not authorized to perform this action";
+        }
+    }
+
+    private String[] getCredentials(String encodedAuth) {
+        String[] authParts = encodedAuth.split(" ");
+        String authInfo = authParts[1];
+        String decodedAuth = new String(Base64.getDecoder().decode(authInfo));
+        return decodedAuth.split(":");
     }
 }
