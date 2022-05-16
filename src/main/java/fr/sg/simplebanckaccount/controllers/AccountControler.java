@@ -69,6 +69,23 @@ public class AccountControler {
         }
     }
 
+    @GetMapping("/checkBalance")
+    public String checkBalance(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String[] credentials = getCredentials(auth);
+        Account account = accounts.get(credentials[0]);
+        if (account != null && account.getPassword().equals(credentials[1])) {
+            String transactions = "Your transactions are: \n";
+            for (Transaction t : account.getTransaction()) {
+                transactions = transactions + t.getDescription() + " " + t.getAmount() + " " + t.getDate() + "\n";
+            }
+            LOG.info("Balance check done on account {}", account.getUser());
+            return "Your balance is " + account.getBalance() + "\n" + transactions;
+        } else {
+            LOG.info("Balance check failed on account {}", credentials[0]);
+            return "You are not authorized to perform this action";
+        }
+    }
+
     private String[] getCredentials(String encodedAuth) {
         String[] authParts = encodedAuth.split(" ");
         String authInfo = authParts[1];
