@@ -37,6 +37,15 @@ public class AccountControllerTest {
     }
 
     @Test
+    public void openAccountShouldAddNewAccount() throws Exception {
+        ResponseEntity<String> reponse = this.restTemplate
+                .exchange(getBaseUrl() + "/openAccount", HttpMethod.POST, null, String.class);
+
+        assertThat(reponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(reponse.getBody()).contains("Account created");
+    }
+
+    @Test
     @Order(1)
     public void testSaveMoney() throws Exception {
         ResponseEntity<String> reponse = this.restTemplate

@@ -37,3 +37,5 @@ Retrieve money:
     curl -u "admin:admin" -X PUT http://localhost:8080/withdrawMoney?amount=5 
 History of transactions:
     curl -u "admin:admin" -X GET http://localhost:8080/checkBalance    
+Add account:
+    curl -X POST http://localhost:8080/openAccount -H 'Content-Type: application/json' -d '{"username":"user2", "password" : "password"}'

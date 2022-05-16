@@ -11,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,6 +39,20 @@ public class AccountControler {
     @GetMapping("/")
     public String welcome() {
         return "Welcome to the Bank!";
+    }
+
+    @PostMapping("/openAccount")
+    public String openAccount(@RequestBody Account newAccount) {
+        if (accounts.containsKey(newAccount.getUser())) {
+            LOG.info("Account already exists for user {}", newAccount.getUser());
+            return "Account already exists";
+        } else {
+            Account account = new Account(newAccount.getUser(), newAccount.getPassword(), 0.0,
+                    new ArrayList<Transaction>());
+            accounts.put(newAccount.getUser(), account);
+            LOG.info("Account created for user {}", newAccount.getUser());
+            return "Account created";
+        }
     }
 
     @PutMapping("/saveMoney")
